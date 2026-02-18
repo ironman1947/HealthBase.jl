@@ -14,6 +14,10 @@ This method is purely for display; it returns `nothing`.
 """
 function Base.show(io::IO, ht::HealthTable)
     df = ht.source
+    
+    rows, cols = size(df)
+    ver = haskey(metadata(df), "omop_cdm_version") ? " (OMOP $(metadata(df, "omop_cdm_version")))" : ""
+    println(io, "HealthTable$ver: $rows rows × $cols columns")
 
     if nrow(df) == 0
         pretty_table(io, ["HealthTable is empty"]; header = [""])
@@ -22,8 +26,8 @@ function Base.show(io::IO, ht::HealthTable)
     end
 
     if haskey(metadata(df), "omop_cdm_version")
-        println(io, "\nOMOP CDM version: ", metadata(df, "omop_cdm_version"))
+        println(io, "OMOP CDM version: ", metadata(df, "omop_cdm_version"))
     end
-
+    
     return nothing
 end
